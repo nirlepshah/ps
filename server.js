@@ -14,17 +14,16 @@ app.use(bodyParser.json());
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
-  port: 465,
   auth: {
-    user: process.env.EMAIL_USER,  // Use environment variable
-    pass: process.env.EMAIL_PASS   // Use environment variable
+    user: process.env.EMAIL_USER,  // Ensure EMAIL_USER is set in Vercel environment variables
+    pass: process.env.EMAIL_PASS   // Ensure EMAIL_PASS is set in Vercel environment variables
   }
 });
 
 const sendEmail = async (to, subject, text) => {
   try {
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER, // Email user as sender
+      from: process.env.EMAIL_USER, // Ensure EMAIL_USER is set as sender
       to,
       subject,
       text
@@ -44,10 +43,16 @@ app.get('/', (req, res) => {
 
 app.post('/', async (req, res) => {
   const { email, subject, message } = req.body;
+
+  // Send the email and await its completion before responding to the client
   const response = await sendEmail(email, subject, message);
+
+  // Send the result back to the client
   res.send(response);
 });
 
+// Start the server, in local development or on Vercel
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
