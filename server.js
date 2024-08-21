@@ -1,49 +1,53 @@
-const express = require('express')
-const nodemailer = require('nodemailer')
+const express = require('express');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
-const app = express()
+const app = express();
 const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
 app.use(cors());
-app.use(express.static('public'))
-app.use(express.json())
+app.use(express.static('public'));
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(express.static(path.join(__dirname, 'public')));
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html')
-})
-app.post('/', (req, res) => {
-  console.log(req.body);
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,  // Use environment variable
-      pass: process.env.EMAIL_PASS   // Use environment variable
 
-    }
-
-  })
-  const mailOptions = {
-    from: req.body.email,
-    to: 'ns080685@gmail.com',
-    subject: `Message from ${req.body.email}: ${req.body.subject}`,
-    text: req.body.message
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  port: 465,
+  auth: {
+    user: process.env.EMAIL_USER,  // Use environment variable
+    pass: process.env.EMAIL_PASS   // Use environment variable
   }
+});
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      res.send('error')
-    }
-    else {
-      console.log('Email sent ' + info.response);
-      res.send('Success')
-    }
-  })
-})
+const sendEmail = async (to, subject, text) => {
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER, // Email user as sender
+      to,
+      subject,
+      text
+    });
+
+    console.log('Email sent: ' + info.response);
+    return 'Success';
+  } catch (error) {
+    console.error('Error sending email: ', error);
+    return 'error';
+  }
+};
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+app.post('/', async (req, res) => {
+  const { email, subject, message } = req.body;
+  const response = await sendEmail(email, subject, message);
+  res.send(response);
+});
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+  console.log(`Server is running on port ${PORT}`);
+});

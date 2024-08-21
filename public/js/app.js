@@ -1,73 +1,3 @@
-// const contactForm = document.querySelector('.contact-form')
-// let name = document.getElementById('name')
-// let email = document.getElementById('email')
-// let subject = document.getElementById('subject')
-// let message = document.getElementById('message')
-
-
-// contactForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
-
-//   let formData = {
-//     name: name.value,
-//     email: email.value,
-//     subject: subject.value,
-//     message: message.value
-//   };
-
-//   let xhr = new XMLHttpRequest();
-//   xhr.open('POST', '/');
-//   xhr.setRequestHeader('Content-Type', 'application/json');
-
-//   xhr.onload = function () {
-//     console.log(xhr.responseText);  // Debugging: Log the actual response
-
-//     if (xhr.status === 200 && xhr.responseText.trim() === 'Success') {
-//       alert('Email sent successfully');
-//       name.value = '';
-//       email.value = '';
-//       subject.value = '';
-//       message.value = '';
-//     } else {
-//       alert('Something went wrong');
-//     }
-//   };
-
-//   xhr.onerror = function () {
-//     alert('Request failed');
-//   };
-
-//   xhr.send(JSON.stringify(formData));
-// });
-
-// contactForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
-//   let formData = {
-//     name: name.value,
-//     email: email.value,
-//     subject: subject.value,
-//     message: message.value
-//   }
-//   let xhr = new XMLHttpRequest();
-//   xhr.open('POST', '/');
-//   xhr.setRequestHeader('content-type', 'application/json');
-//   xhr.onload = function () {
-//     console.log(xhr.responseText);
-//     if (xhr.responseText == 'success') {
-//       alert('email sent ')
-//       name.value = ''
-//       email.value = ''
-//       subject.value = ''
-//       message.value = ''
-//     }
-//     else {
-//       alert('something went wrong')
-//     }
-
-
-//   }
-//   xhr.send(JSON.stringify(formData))
-// })
 
 const contactForm = document.querySelector('.contact-form');
 let name = document.getElementById('name');
@@ -98,7 +28,7 @@ contactForm.addEventListener('submit', (e) => {
   // Check if the phone number is provided and matches the pattern
   if (phoneNumber && !phonePattern.test(phoneNumber)) {
     alert('Please enter a valid phone number. Example formats: (123) 456-7890, 123-456-7890, 123.456.7890, or 123 456 7890.');
-    return; // Stop form submission if validation fails
+    return;
   }
   let formData = {
     name: name.value,
@@ -119,12 +49,12 @@ contactForm.addEventListener('submit', (e) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.text(); // Assuming the server responds with plain text
+      return response.text();
     })
     .then((data) => {
-      console.log('Response:', data);  // Debugging: Log the actual response
+      console.log('Response:', data);
 
-      if (data.trim() === 'Success') { // Check if response is 'Success'
+      if (data.trim() === 'Success') {
         alert('Email sent successfully');
         name.value = '';
         email.value = '';
