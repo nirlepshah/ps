@@ -20,11 +20,11 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendEmail = async (to, subject, text) => {
+const sendEmail = async (subject, text) => {
   try {
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER, // Ensure EMAIL_USER is set as sender
-      to,
+      to: process.env.EMAIL_USER,
       subject,
       text
     });
@@ -43,9 +43,10 @@ app.get('/', (req, res) => {
 
 app.post('/', async (req, res) => {
   const { email, subject, message } = req.body;
+  const emailContent = `You have received a message from: ${email}\n\nMessage:\n${message}`;
 
   // Send the email and await its completion before responding to the client
-  const response = await sendEmail(email, subject, message);
+  const response = await sendEmail(subject, emailContent);
 
   // Send the result back to the client
   res.send(response);
